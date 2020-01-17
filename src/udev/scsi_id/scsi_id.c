@@ -51,6 +51,7 @@ static char vendor_str[64];
 static char model_str[64];
 static char vendor_enc_str[256];
 static char model_enc_str[256];
+static char unit_serial_number[MAX_SERIAL_LEN];
 static char revision_str[16];
 static char type_str[16];
 
@@ -506,9 +507,19 @@ static int scsi_id(char *maj_min_dev) {
                         util_replace_whitespace(dev_scsi.serial, serial_str, sizeof(serial_str)-1);
                         util_replace_chars(serial_str, NULL);
                         printf("ID_SERIAL=%s\n", serial_str);
+
+                        udev_util_encode_string(dev_scsi.serial, serial_str, sizeof(serial_str)-1);
+                        printf("ID_SERIAL_ENC=%s\n", serial_str);
+
+
+
                         util_replace_whitespace(dev_scsi.serial_short, serial_str, sizeof(serial_str)-1);
                         util_replace_chars(serial_str, NULL);
                         printf("ID_SERIAL_SHORT=%s\n", serial_str);
+
+
+                        udev_util_encode_string(dev_scsi.serial_short, serial_str, sizeof(serial_str)-1);
+                        printf("ID_SERIAL_SHORT_ENC=%s\n", serial_str);
                 }
                 if (dev_scsi.wwn[0] != '\0') {
                         printf("ID_WWN=0x%s\n", dev_scsi.wwn);
@@ -521,7 +532,12 @@ static int scsi_id(char *maj_min_dev) {
                 if (dev_scsi.tgpt_group[0] != '\0')
                         printf("ID_TARGET_PORT=%s\n", dev_scsi.tgpt_group);
                 if (dev_scsi.unit_serial_number[0] != '\0')
-                        printf("ID_SCSI_SERIAL=%s\n", dev_scsi.unit_serial_number);
+                        util_replace_whitespace(dev_scsi.unit_serial_number, unit_serial_number, sizeof(unit_serial_number)-1);
+                        util_replace_chars(unit_serial_number, NULL);
+                        printf("ID_SCSI_SERIAL=%s\n", unit_serial_number);
+
+                        udev_util_encode_string(dev_scsi.unit_serial_number, unit_serial_number, sizeof(unit_serial_number)-1);
+                        printf("ID_SCSI_SERIAL_ENC=%s\n", unit_serial_number);
                 goto out;
         }
 

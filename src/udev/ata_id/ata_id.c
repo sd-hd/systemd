@@ -395,6 +395,7 @@ int main(int argc, char *argv[]) {
         char model[41];
         char model_enc[256];
         char serial[21];
+        char serial_enc[256];
         char revision[9];
         const char *node = NULL;
         int export = 0;
@@ -484,8 +485,13 @@ int main(int argc, char *argv[]) {
         udev_util_encode_string(model, model_enc, sizeof(model_enc));
         util_replace_whitespace((char *) id.model, model, 40);
         util_replace_chars(model, NULL);
+
+        memcpy(serial, id.serial_no, 40);
+        serial[20] = '\0';
+        udev_util_encode_string(serial, serial_enc, sizeof(serial_enc));
         util_replace_whitespace((char *) id.serial_no, serial, 20);
         util_replace_chars(serial, NULL);
+
         util_replace_whitespace((char *) id.fw_rev, revision, 8);
         util_replace_chars(revision, NULL);
 
@@ -525,6 +531,7 @@ int main(int argc, char *argv[]) {
                 } else {
                         printf("ID_SERIAL=%s\n", model);
                 }
+                printf("ID_SERIAL_ENC=%s\n", serial_enc);
 
                 if (id.command_set_1 & (1<<5)) {
                         printf("ID_ATA_WRITE_CACHE=1\n");
